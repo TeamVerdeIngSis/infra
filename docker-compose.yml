@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  parse:
+    container_name: "parse-service"
+    build:
+      context: ./Parse
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8080
+    networks:
+      - app-network
+
+  permission:
+    container_name: "permission-service"
+    build:
+      context: ./Permission
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8080
+    environment:
+      DB_HOST: db_permission
+      DB_PORT: 5432
+      DB_NAME: permission-db
+      DB_USER: sa
+      DB_PASSWORD: password
+    depends_on:
+      - db_permission
+    networks:
+      - app-network
+
+  snippets:
+    container_name: "snippets-service"
+    build:
+      context: ./Snippets
+      dockerfile: Dockerfile
+    ports:
+      - 8083:8080
+    environment:
+      DB_HOST: db_snippets
+      DB_PORT: 5432
+      DB_NAME: snippets-db
+      DB_USER: sa
+      DB_PASSWORD: password
+    depends_on:
+      - db_snippets
+      - parse
+      - permission
+    networks:
+      - app-network
+
+  db_permission:
+    container_name: db_permission
+    image: postgres:12
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: permission-db
+    volumes:
+      - pgdata_permission:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  db_snippets:
+    container_name: db_snippets
+    image: postgres:12
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: snippets-db
+    volumes:
+      - pgdata_snippets:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  pgdata_permission:
+
+  pgdata_snippets:
+
+networks:
+  app-network:
+    driver: bridge
