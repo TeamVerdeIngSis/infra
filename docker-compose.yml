@@ -11,7 +11,7 @@ services:
 
   permission:
     container_name: "permission-service"
-    image: ghcr.io/teamverdeingsis/permission:latest
+    image: ghcr.io/teamverdeingsis/permissions:latest
     ports:
       - 8082:8080
     environment:
