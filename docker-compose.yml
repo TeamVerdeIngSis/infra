@@ -44,8 +44,7 @@ services:
       DB_NAME: snippets-db
       DB_USER: sa
       DB_PASSWORD: password
-      auth0.audience: your-auth0-audience-value # Replace with actual value
-      SPRING_PROFILES_ACTIVE: dev # Optional: use if you want to set a specific Spring profile
+      auth0.audience: https://snippets-api
     depends_on:
       - db_snippets
       - parse
