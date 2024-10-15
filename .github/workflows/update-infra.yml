@@ -19,6 +19,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            cd /home/your_user/infra
+            cd ../../
             docker-compose pull
             docker-compose up -d
