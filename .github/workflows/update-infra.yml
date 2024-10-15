@@ -19,4 +19,4 @@ jobs:
 
       - name: SSH and Update Services
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose pull && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
