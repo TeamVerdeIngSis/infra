@@ -12,13 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH and Update Services
-        uses: appleboy/ssh-action@v0.1.4
+      - name: Start SSH Agent
+        uses: webfactory/ssh-agent@v0.5.4
         with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            cd ../../
-            docker-compose pull
-            docker-compose up -d
+          ssh-private-key: ${{ secrets.VM_SSH_KEY }}
+
+      - name: SSH and Update Services
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose pull && docker-compose up -d"
