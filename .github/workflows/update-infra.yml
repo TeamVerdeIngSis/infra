@@ -18,5 +18,9 @@ jobs:
           ssh-private-key: ${{ secrets.VM_SSH_KEY }}
 
       - name: SSH and Update Services
+        env:
+            VM_USER: ${{ env.VM_USER }}
+            VM_HOST: ${{ env.VM_HOST }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
+          
