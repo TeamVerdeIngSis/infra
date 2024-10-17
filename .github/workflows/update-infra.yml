@@ -22,7 +22,7 @@ jobs:
 
       - name: SSH and Update Services
         run: |
-          ssh -o StrictHostKeyChecking=no -i /tmp/vm_ssh_key ${{ vars.VM_USER }}@${{ vars.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no -i /tmp/vm_ssh_key ${{ vars.VM_USER }}@${{ vars.VM_HOST }} "cd /home/teamVerde1/infra && sudo docker-compose down && sudo docker-compose up -d"
 
       - name: Remove SSH Key file
         run: |
