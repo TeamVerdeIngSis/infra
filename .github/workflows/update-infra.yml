@@ -12,12 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Start SSH Agent
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.VM_SSH_KEY }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create SSH Key file
+        run: |
+          echo "${{ secrets.VM_SSH_KEY }}" > /tmp/vm_ssh_key
+          chmod 600 /tmp/vm_ssh_key  # Permisos de solo lectura
 
       - name: SSH and Update Services
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ vars.VM_USER }}@${{ vars.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
-          
+          ssh -o StrictHostKeyChecking=no -i /tmp/vm_ssh_key ${{ vars.VM_USER }}@${{ vars.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
+
+      - name: Remove SSH Key file
+        run: |
+          rm -f /tmp/vm_ssh_key
