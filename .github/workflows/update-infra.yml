@@ -26,4 +26,4 @@ jobs:
 
       - name: Remove SSH Key file
         run: |
-          rm -f /tmp/vm_ssh_key
+          rm -f /tmp/vm_ssh_key 
