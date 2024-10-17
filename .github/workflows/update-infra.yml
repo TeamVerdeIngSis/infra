@@ -19,5 +19,5 @@ jobs:
 
       - name: SSH and Update Services
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ env.VM_USER }}@${{ env.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ${{ vars.VM_USER }}@${{ vars.VM_HOST }} "cd /home/teamVerde1/infra && docker-compose down && docker-compose up -d"
           
