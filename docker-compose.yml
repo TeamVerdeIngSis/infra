@@ -6,16 +6,9 @@ services:
     image: ghcr.io/teamverdeingsis/parse:latest
     ports:
       - 8081:8080
-    environment:
-      DB_HOST: db_parse
-      DB_PORT: 5432
-      DB_NAME: parse-db
-      DB_USER: sa
-      DB_PASSWORD: password
-    depends_on:
-      - db_parse
     networks:
       - app-network
+
 
   permission:
     container_name: "permission-service"
@@ -39,14 +32,9 @@ services:
     ports:
       - 8083:8080
     environment:
-      DB_HOST: db_snippets
-      DB_PORT: 5432
-      DB_NAME: snippets-db
-      DB_USER: sa
-      DB_PASSWORD: password
       auth0.audience: https://snippets-api
+      spring.security.oauth2.resourceserver.jwt.issuer-uri: https://dev-ppmfishyt4u8fel3.us.auth0.com
     depends_on:
-      - db_snippets
       - parse
       - permission
     networks:
@@ -65,40 +53,35 @@ services:
       - pgdata_permission:/var/lib/postgresql/data
     networks:
       - app-network
-
-  db_snippets:
-    container_name: db_snippets
-    image: postgres:12
+  api:
+    container_name: "asset_service"
+    image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
-      - 5434:5432
+      - "8080:8080"
     environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: snippets-db
-    volumes:
-      - pgdata_snippets:/var/lib/postgresql/data
-    networks:
-      - app-network
+      AZURE_HOST: "http://azurite"
+      NEW_RELIC_APP_NAME: "asset-service"
+      NEW_RELIC_AGENT_ENABLED: false
 
-  db_parse:
-    container_name: db_parse
-    image: postgres:12
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
+    restart: always
     ports:
-      - 5435:5432
-    environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: parse-db
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
     volumes:
-      - pgdata_parse:/var/lib/postgresql/data
-    networks:
-      - app-network
+      - blob:/workspace
 
 volumes:
-  pgdata_permission:
-  pgdata_snippets:
-  pgdata_parse:
+    blob:
+        external: false
+    pgdata_permission: {}
 
 networks:
   app-network:
     driver: bridge
+
