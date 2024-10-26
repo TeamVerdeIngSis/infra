@@ -28,17 +28,26 @@ services:
 
   snippets:
     container_name: "snippets-service"
-    image: ghcr.io/teamverdeingsis/snippets:latest
+    build:
+        context: C:\Users\Fede\Projects\IngSistemas\Snippet\Snippets
+        dockerfile: Dockerfile
     ports:
       - 8083:8080
     environment:
-      auth0.audience: https://snippets-api
-      spring.security.oauth2.resourceserver.jwt.issuer-uri: https://dev-ppmfishyt4u8fel3.us.auth0.com
+      DB_HOST: db_permission
+      DB_PORT: 5432
+      DB_NAME: permission-db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
     depends_on:
       - parse
       - permission
     networks:
       - app-network
+    env_file:
+      - .env
 
   db_permission:
     container_name: db_permission
