@@ -28,9 +28,7 @@ services:
 
   snippets:
     container_name: "snippets-service"
-    build:
-        context: C:\Users\Fede\Projects\IngSistemas\Snippet\Snippets
-        dockerfile: Dockerfile
+    image: ghcr.io/teamverdeingsis/snippets:latest
     ports:
       - 8083:8080
     environment:
