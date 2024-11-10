@@ -1,77 +1,86 @@
 version: '3.8'
 
 services:
+  snippets_service:
+    image: ghcr.io/teamverdeingsis/snippets:latest
+    platform: linux/amd64
+    ports:
+      - '8082:8081'
+    environment:
+      POSTGRES_HOST: db_1
+      POSTGRES_DB: snippets_db
+      POSTGRES_USER: snippets_user
+      POSTGRES_PASSWORD: snippets_password
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db_1
+    networks:
+      - app-network
+
+  db_1:
+    image: postgres:12
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: snippets_db
+      POSTGRES_USER: snippets_user
+      POSTGRES_PASSWORD: snippets_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - snippets_db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  permissions_service:
+    image: ghcr.io/teamverdeingsis/permissions:latest
+    platform: linux/amd64
+    ports:
+      - '8085:8085'
+    environment:
+      POSTGRES_HOST: db_2
+      POSTGRES_DB: p_db
+      POSTGRES_USER: p_user
+      POSTGRES_PASSWORD: p_password
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db_2
+    networks:
+      - app-network
+
+  db_2:
+    image: postgres:12
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: p_db
+      POSTGRES_USER: p_user
+      POSTGRES_PASSWORD: p_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - permissions_db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
   parse:
     container_name: "parse-service"
     image: ghcr.io/teamverdeingsis/parse:latest
     ports:
-      - 8081:8080
+      - "8081:8080"
     networks:
       - app-network
 
-
-  permission:
-    container_name: "permission-service"
-    image: ghcr.io/teamverdeingsis/permissions:latest
-    ports:
-      - 8082:8080
-    environment:
-      DB_HOST: db_permission
-      DB_PORT: 5432
-      DB_NAME: permission-db
-      DB_USER: sa
-      DB_PASSWORD: password
-    depends_on:
-      - db_permission
-    networks:
-      - app-network
-
-  snippets:
-    container_name: "snippets-service"
-    build:
-        context: C:\Users\Fede\Projects\IngSistemas\Snippet\Snippets
-        dockerfile: Dockerfile
-    ports:
-      - 8083:8080
-    environment:
-      DB_HOST: db_permission
-      DB_PORT: 5432
-      DB_NAME: permission-db
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
-    depends_on:
-      - parse
-      - permission
-    networks:
-      - app-network
-    env_file:
-      - .env
-
-  db_permission:
-    container_name: db_permission
-    image: postgres:12
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: permission-db
-    volumes:
-      - pgdata_permission:/var/lib/postgresql/data
-    networks:
-      - app-network
   api:
     container_name: "asset_service"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
+    platform: linux/amd64
     ports:
       - "8080:8080"
     environment:
       AZURE_HOST: "http://azurite"
       NEW_RELIC_APP_NAME: "asset-service"
       NEW_RELIC_AGENT_ENABLED: false
-
+    networks:
+      - app-network
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -84,13 +93,17 @@ services:
       - "10002:10002"
     volumes:
       - blob:/workspace
+    networks:
+      - app-network
 
 volumes:
-    blob:
-        external: false
-    pgdata_permission: {}
+  snippets_db_data:
+    external: false
+  permissions_db_data:
+    external: false
+  blob:
+    external: false
 
 networks:
   app-network:
     driver: bridge
-
