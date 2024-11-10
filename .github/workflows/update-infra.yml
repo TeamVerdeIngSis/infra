@@ -24,6 +24,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i /tmp/vm_ssh_key ${{ vars.VM_USER }}@${{ vars.VM_HOST2 }} "cd /home/teamVerde1/infra && sudo docker compose down && sudo docker compose pull && sudo docker compose up -d"
 
+
       - name: Remove SSH Key file
         run: |
           rm -f /tmp/vm_ssh_key  
