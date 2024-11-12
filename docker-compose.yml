@@ -102,7 +102,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./config/vm.conf:/etc/nginx/conf.d:ro
+      - ./config/vm.conf:/etc/nginx/config/vm.conf:ro
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
 
