@@ -95,6 +95,7 @@ services:
       - blob:/workspace
     networks:
       - app-network
+
   proxy:
     image: nginx
     container_name: "reverse-proxy"
@@ -102,9 +103,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./config/vm.conf:/etc/nginx/config/vm.conf:ro
+      - ./config/vm.conf:/etc/nginx/conf.d/default.conf:ro
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
+    networks:
+      - app-network
 
   certbot:
     container_name: "certbot"
@@ -112,7 +115,9 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot/ --force-renewal --email jengelhard@mail.austral.edu.ar -d teamverde.westus2.cloudapp.azure.com --agree-tos
+    command: certonly --webroot -w /var/www/certbot --email jengelhard@mail.austral.edu.ar -d teamverde.westus2.cloudapp.azure.com --agree-tos
+    networks:
+      - app-network
 
 volumes:
   snippets_db_data:
@@ -121,9 +126,7 @@ volumes:
     external: false
   blob:
     external: false
-  pgdata_permission: {}
 
 networks:
   app-network:
     driver: bridge
-
