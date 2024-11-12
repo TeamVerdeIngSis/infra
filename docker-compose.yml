@@ -95,24 +95,24 @@ services:
       - blob:/workspace
     networks:
       - app-network
-  nginx:
-    platform: linux/amd64
-    image: nginx:latest
-    container_name: "nginx"
-    volumes:
-      - ./config/nginx-dev.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt/live/ingsis-students.duckdns.org:/etc/letsencrypt/live/ingsis-students.duckdns.org:ro
-      - /etc/letsencrypt/archive/ingsis-students.duckdns.org:/etc/letsencrypt/archive/ingsis-students.duckdns.org:ro
+  proxy:
+    image: nginx
+    container_name: "reverse-proxy"
     ports:
       - "80:80"
-      - "443:443"  # Expose HTTPS
-    depends_on:
-      - parse
-      - permission
-      - snippets
-      - api
-    networks:
-      - app-network
+      - "443:443"
+    volumes:
+      - ./config/vm.conf:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+
+  certbot:
+    container_name: "certbot"
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot/ --force-renewal --email jengelhard@mail.austral.edu.ar -d teamverde.westus2.cloudapp.azure.com --agree-tos
 
 volumes:
   snippets_db_data:
