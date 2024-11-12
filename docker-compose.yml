@@ -95,6 +95,24 @@ services:
       - blob:/workspace
     networks:
       - app-network
+  nginx:
+    platform: linux/amd64
+    image: nginx:latest
+    container_name: "nginx"
+    volumes:
+      - ./config/nginx-dev.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/live/ingsis-students.duckdns.org:/etc/letsencrypt/live/ingsis-students.duckdns.org:ro
+      - /etc/letsencrypt/archive/ingsis-students.duckdns.org:/etc/letsencrypt/archive/ingsis-students.duckdns.org:ro
+    ports:
+      - "80:80"
+      - "443:443"  # Expose HTTPS
+    depends_on:
+      - parse
+      - permission
+      - snippets
+      - api
+    networks:
+      - app-network
 
 volumes:
   snippets_db_data:
@@ -103,7 +121,9 @@ volumes:
     external: false
   blob:
     external: false
+  pgdata_permission: {}
 
 networks:
   app-network:
     driver: bridge
+
