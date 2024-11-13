@@ -17,6 +17,7 @@ services:
     networks:
       - app-network
 
+
   db_1:
     image: postgres:12
     platform: linux/amd64
