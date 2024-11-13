@@ -7,16 +7,19 @@ services:
     ports:
       - "8082:8083"
     environment:
+
       POSTGRES_HOST: db_1
       POSTGRES_DB: snippets_db
       POSTGRES_USER: snippets_user
       POSTGRES_PASSWORD: snippets_password
       POSTGRES_PORT: 5432
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: 'snippets'
+      NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
     depends_on:
       - db_1
     networks:
       - app-network
-
 
   db_1:
     image: postgres:12
@@ -43,6 +46,9 @@ services:
       POSTGRES_USER: p_user
       POSTGRES_PASSWORD: p_password
       POSTGRES_PORT: 5432
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: 'permissions'
+      NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
     depends_on:
       - db_2
     networks:
@@ -69,7 +75,10 @@ services:
       - "8081:8080"
     networks:
       - app-network
-
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: 'snippet'
+      NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
   api:
     container_name: "asset_service"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
