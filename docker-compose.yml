@@ -20,7 +20,6 @@ services:
       AUTH_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
       spring.security.oauth2.resourceserver.jwt.issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
-
     depends_on:
       - db_1
     networks:
