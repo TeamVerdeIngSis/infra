@@ -15,6 +15,12 @@ services:
       NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
       NEW_RELIC_APP_NAME: 'snippetsInfra'
       NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
+      AUTH_SERVER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
+      AUTH_CLIENT_ID: ${AUTH0_CLIENT_ID}
+      AUTH_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
+      spring.security.oauth2.resourceserver.jwt.issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
+      AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+
     depends_on:
       - db_1
     networks:
@@ -47,8 +53,11 @@ services:
       NEW_RELIC_APP_NAME: 'parseInfra'
       NEW_RELIC_AGENT_ENABLED: true
       NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
+
     networks:
       - app-network
+    env_file:
+      - .env
 
 
   assetServiceInfra:
