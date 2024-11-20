@@ -4,6 +4,7 @@ services:
   snippetsServiceInfra:
     image: ghcr.io/teamverdeingsis/snippets:latest
     platform: linux/amd64
+    container_name: 'snippets-service-infra'
     ports:
       - "8083:8083"
     environment:
@@ -28,6 +29,7 @@ services:
   permissionsServiceInfra:
     image: ghcr.io/teamverdeingsis/permissions:latest
     platform: linux/amd64
+    container_name: 'permissions-service-infra'
     ports:
       - '8082:8082'
     environment:
@@ -45,6 +47,7 @@ services:
       - app-network
   parseServiceInfra:
     image: ghcr.io/teamverdeingsis/parse:latest
+    container_name: 'parse-service-infra'
     ports:
       - "8081:8081"
     environment:
@@ -61,6 +64,7 @@ services:
 
   assetServiceInfra:
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
+    container_name: 'asset-service-infra'
     ports:
       - "8080:8080"
     environment:
@@ -91,12 +95,14 @@ services:
       - "443:443"
     volumes:
       - ./config/vm.conf:/etc/nginx/conf.d/default.conf:ro
-     # - ./certbot/conf:/etc/letsencrypt:ro
+      - /etc/letsencrypt/live/teamverde.westus2.cloudapp.azure.com:/etc/letsencrypt/live/teamverde.westus2.cloudapp.azure.com:ro
+      - /etc/letsencrypt/live/teamverde.westus2.cloudapp.azure.com:/etc/letsencrypt/live/teamverde.westus2.cloudapp.azure.com:ro
     networks:
       - app-network
 
   db_1:
     image: postgres:12
+    container_name: 'snippets-db-infra'
     platform: linux/amd64
     environment:
       POSTGRES_DB: snippets_db
@@ -112,6 +118,7 @@ services:
 
   db_2:
     image: postgres:12
+    container_name: 'permissions-db-infra'
     platform: linux/amd64
     environment:
       POSTGRES_DB: p_db
