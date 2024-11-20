@@ -1,5 +1,10 @@
 version: '3.8'
 
+networks:
+  app-network:
+    driver: bridge
+
+
 services:
   snippetsServiceInfra:
     image: ghcr.io/teamverdeingsis/snippets:latest
@@ -136,7 +141,3 @@ volumes:
     external: false
   blob:
     external: false
-
-networks:
-  app-network:
-    driver: bridge
