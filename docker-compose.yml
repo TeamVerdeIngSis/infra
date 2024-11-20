@@ -99,7 +99,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./config/vm.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./config/local.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app-network
