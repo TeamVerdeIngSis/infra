@@ -157,6 +157,8 @@ services:
     environment:
       VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
       VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
+    networks:
+      - app-network
 
 volumes:
   snippets_db_data:
