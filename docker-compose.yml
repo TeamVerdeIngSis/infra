@@ -22,6 +22,7 @@ services:
       AUTH_SERVER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
       AUTH_CLIENT_ID: ${AUTH0_CLIENT_ID}
       AUTH_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
+      AUTH0_TOKEN: ${AUTH0_TOKEN}
       spring.security.oauth2.resourceserver.jwt.issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
       REDIS_HOST: redis
@@ -108,6 +109,12 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app-network
+    depends_on:
+      - snippetsServiceInfra
+      - permissionsServiceInfra
+      - parseServiceInfra
+      - assetServiceInfra
+      - snippet-ui
 
   db_1:
     image: postgres:12
@@ -147,6 +154,7 @@ services:
       - "6379:6379"
     networks:
         - app-network
+
 
   snippet-ui:
     container_name: "snippet-ui-infra"
