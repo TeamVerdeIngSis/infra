@@ -1,17 +1,15 @@
 version: '3.8'
-
 networks:
   app-network:
     driver: bridge
-
-
 services:
   snippetsServiceInfra:
-    image: ghcr.io/teamverdeingsis/snippets:latest
+    #image: ghcr.io/teamverdeingsis/snippets:latest
+    image: snippets:latest
     platform: linux/amd64
     container_name: 'snippets-service-infra'
     ports:
-      - "8083:8083"
+      - "8083:8080"
     environment:
       POSTGRES_HOST: db_1
       POSTGRES_DB: snippets_db
@@ -26,17 +24,21 @@ services:
       AUTH_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
       spring.security.oauth2.resourceserver.jwt.issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
     depends_on:
       - db_1
+      - redis
     networks:
       - app-network
 
   permissionsServiceInfra:
-    image: ghcr.io/teamverdeingsis/permissions:latest
+    #image: ghcr.io/teamverdeingsis/permissions:latest
+    image: permissions:latest
     platform: linux/amd64
     container_name: 'permissions-service-infra'
     ports:
-      - '8082:8082'
+      - '8082:8080'
     environment:
       POSTGRES_HOST: db_2
       POSTGRES_DB: p_db
@@ -55,12 +57,14 @@ services:
     image: ghcr.io/teamverdeingsis/parse:latest
     container_name: 'parse-service-infra'
     ports:
-      - "8081:8081"
+      - "8081:8080"
     environment:
       NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
       NEW_RELIC_APP_NAME: 'parseInfra'
       NEW_RELIC_AGENT_ENABLED: true
       NEW_RELIC_LOG_EXTENSION_ADD_MDC: true
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
     env_file:
       - .env
     networks:
@@ -69,8 +73,8 @@ services:
   assetServiceInfra:
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     container_name: 'asset-service-infra'
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     environment:
       AZURE_HOST: "http://azurite"
       NEW_RELIC_APP_NAME: "asset-service"
@@ -133,6 +137,23 @@ services:
       - permissions_db_data:/var/lib/postgresql/data
     networks:
       - app-network
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    platform: linux/amd64
+    ports:
+      - "6379:6379"
+
+  snippet-ui:
+    container_name: "snippet-ui-infra"
+    image: ui
+    platform: linux/amd64
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
+      VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
 
 volumes:
   snippets_db_data:
