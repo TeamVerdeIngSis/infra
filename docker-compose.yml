@@ -97,24 +97,22 @@ services:
       - blob:/workspace
     networks:
       - app-network
-
   proxy:
     image: nginx
     container_name: "reverse-proxy"
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./config/dev.conf:/etc/nginx/nginx.conf:ro
+      - ./config/dev-vm.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app-network
     depends_on:
       - snippetsServiceInfra
       - permissionsServiceInfra
-      - parseServiceInfra
       - assetServiceInfra
       - snippet-ui
+
 
   db_1:
     image: postgres:12
