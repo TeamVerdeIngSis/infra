@@ -8,8 +8,6 @@ services:
 #    image: snippets:latest
     platform: linux/amd64
     container_name: 'snippets-service-infra'
-    ports:
-      - "8083:8080"
     environment:
       POSTGRES_HOST: db_1
       POSTGRES_DB: snippets_db
@@ -38,8 +36,6 @@ services:
 #    image: permissions:latest
     platform: linux/amd64
     container_name: 'permissions-service-infra'
-    ports:
-      - '8082:8080'
     environment:
       POSTGRES_HOST: db_2
       POSTGRES_DB: p_db
@@ -58,8 +54,6 @@ services:
     image: ghcr.io/teamverdeingsis/parse:latest
 #    image: parse:latest
     container_name: 'parse-service-infra'
-    ports:
-      - "8081:8080"
     environment:
       NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
       NEW_RELIC_APP_NAME: 'parseInfra'
@@ -75,8 +69,6 @@ services:
   assetServiceInfra:
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     container_name: 'asset-service-infra'
-#    ports:
-#      - "8080:8080"
     environment:
       AZURE_HOST: "http://azurite"
       NEW_RELIC_APP_NAME: "asset-service"
@@ -158,8 +150,6 @@ services:
     container_name: "snippet-ui-infra"
     image: ghcr.io/teamverdeingsis/ui:latest
     platform: linux/amd64
-    ports:
-      - "5173:5173"
     environment:
       VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
       VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
